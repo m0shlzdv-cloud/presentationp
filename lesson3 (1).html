@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>บทที่ 3 — การนำเสนอ | Aviation & Service Industries</title>
+<link href="https://fonts.googleapis.com/css2?family=Google_Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --stage:#f5f5f4;
+  --ink:#2a2a2a;
+  --navy:#262423;
+  --blue:#93abd9;  --blue-l:#e8f0ff;  --blue-b:#c9ebff;
+  --grn:#b7c96a;   --grn-l:#fbffe7;   --grn-b:#e9f2bf;
+  --gold:#ede986;  --gold-l:#fffee9;  --gold-b:#faf8d4;
+  --purp:#cda4ef;  --purp-l:#faefff;  --purp-b:#f6e3fe;
+  --teal:#0891B2;  --red:#DC2626;     --red-l:#FEF2F2;
+  --gray:#d8d9d4;  --muted:#a0adc2;   --dgray:#374151;
+  --card:#FFFFFF;
+}
+html,body{height:100%;overflow:hidden;font-family:'Google_Sans',sans-serif;background:var(--ink)}
+
+/* ===== DECK SYSTEM ===== */
+.deck{position:fixed;inset:0;
+  background:linear-gradient(rgba(245, 245, 244, 0.652),rgba(245, 245, 244, 0.358)), url('plane.jpg') center/cover no-repeat;}
+.slide{
+  position:absolute;inset:0;
+  background:transparent;
+  display:flex;flex-direction:column;
+  transition:transform .5s ease;
+  transform:translateX(100%);
+  padding:9vmin 3vmin 2.2vmin;
+}
+.slide.active{transform:translateX(0);z-index:2}
+.slide.prev{transform:translateX(-100%)}
+.slide[data-nav="home"] .topic-card,
+.slide[data-nav="home"] .acc-item{
+  background:rgba(255,255,255,.5);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+
+/* ===== TOP BAR (fixed/pinned) ===== */
+.bar{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;
+  align-items:center;justify-content:space-between;
+  padding:1.8vmin 3vmin;}
+.bar-logo .tx{font-size:1.5vmin;color:var(--muted);line-height:1.3}
+.bar-logo .tx b{color:var(--muted);font-size:1.7vmin}
+.bar-nav{display:flex;gap:.6vmin;background:#ffffff1c;
+  border-radius:10vmin;padding:.6vmin;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  box-shadow:0 1vmin 3vmin rgba(13,31,60,.08)}
+.bar-nav button{font-family:inherit;border:0;
+  background:transparent;color:var(--muted);font-size:2vmin;
+  font-weight:600;padding:.9vmin 2.2vmin;border-radius:10vmin;
+  cursor:pointer;transition:.15s;white-space:nowrap}
+.bar-nav button.on{background:var(--grn);color:var(--ink)}
+
+/* ===== STAGE / CONTENT ===== */
+.stage{flex:1;min-height:0;display:flex;flex-direction:column}
+
+/* big headings */
+.h-big{font-size:5.4vmin;font-weight:800;line-height:1.02;letter-spacing:-.02em;color:var(--ink)}
+.h-mid{font-size:4.2vmin;font-weight:800;line-height:1.05;letter-spacing:-.01em;color:var(--ink)}
+.h-sec{font-size:3.3vmin;font-weight:700;color:var(--navy)}
+.sub{font-size:2.5vmin;color:var(--dgray);line-height:1}
+.body{font-size:2.2vmin;color:var(--dgray);line-height:1.6}
+.tiny{font-size:1.6vmin;color:var(--muted);line-height:1.5}
+
+/* cards */
+.card{background:var(--card);border-radius:2vmin;box-shadow:0 1vmin 4vmin rgba(13,31,60,.07)}
+.pad{padding:2.4vmin}
+
+/* nav arrows */
+.arrows button{position:fixed;bottom:3vmin;z-index:50;width:5.2vmin;height:5.2vmin;border-radius:50%;
+  border:0;background:#ffffff40;color:#6a6a6a;font-size:2.4vmin;
+  cursor:pointer;display:flex;align-items:center;
+  justify-content:center;transition:.2s;
+  box-shadow:0 1vmin 3vmin rgba(13,31,60,.2)}
+#prevBtn{left:3.7vmin}
+#nextBtn{right:3.7vmin}
+.arrows button:disabled{opacity:.3;cursor:default;transform:none}
+
+/* badge dot */
+.bd{width:1vmin;height:1vmin;border-radius:50%;display:inline-block}
+
+/* table */
+table.t{width:100%;border-collapse:collapse;font-size:2.2vmin}
+table.t th{background:var(--stage);
+  font-weight:800;padding:1.1vmin 1.3vmin;text-align:left;font-size:2.6vmin}
+table.t td{padding:1vmin 2.3vmin;
+  border-bottom:1px solid var(--stage);
+  color:var(--dgray);vertical-align:top}
+table.t tr:last-child td{border-bottom:0}
+table.t tbody tr:nth-child(even){background:var(--card)}
+.grid-fill table.t td,.grid-fill table.t th{padding-top:1.9vmin;padding-bottom:1.9vmin;text-align:center}
+.grid-fill table.t td:first-child,.grid-fill table.t th:first-child{text-align:left}
+.grid-fill table.t th{background:var(--card)}
+
+/* scroll hint for dense slides */
+.scroll-zone{overflow-y:auto;min-height:0}
+.scroll-zone::-webkit-scrollbar{width:6px}
+.scroll-zone::-webkit-scrollbar-thumb{background:var(--gray);border-radius:3px}
+
+/* org card kv list */
+.kvl{display:flex;flex-direction:column;gap:0}
+.kvl .row{display:flex;gap:3vmin;padding:.5vmin 0;
+  border-bottom:1px solid var(--stage);font-size:inherit;
+  line-height:1.6}
+.kvl .row:last-child{border-bottom:0}
+.kvl .k{flex-shrink:0;width:7vmin;font-weight:700}
+.kvl .v{color:var(--dgray);flex:1}
+
+/* org toggle tabs */
+.orgtab{font-family:inherit;cursor:pointer;
+  border:none;background:#ffffff45;border-radius:1.4vmin;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  padding:1.2vmin 1.6vmin;display:flex;align-items:center;gap:1.2vmin;transition:.18s;text-align:left}
+.orgtab.on{background:var(--ac);}
+.orgtab .ic{width:6vmin;height:6vmin;border-radius:1vmin;
+  background:var(--ac);color:var(--ink);display:flex;align-items:center;justify-content:center;font-size:1.9vmin;flex-shrink:0}
+.orgtab.on .ic{background:#ffffff30}
+.ic img{width:100%;height:100%;object-fit:cover;display:block;border-radius:1vmin}
+.ic.logo{background:#fff;padding:0;overflow:hidden}
+.orgtab.on .ic.logo{background:#fff}
+.orgtab .lbl{display:flex;flex-direction:column;line-height:1.2}
+.orgtab .lbl b{font-size:3.2vmin;color:var(--ink)}
+.orgtab .lbl span{font-size:2.0vmin;color:var(--muted);font-weight:500}
+.orgtab.on .lbl b,.orgtab.on .lbl span{color:var(--ink)}
+.orgtab.on .lbl span{opacity:.85}
+
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(.6vmin)}}
+
+/* iata code chips */
+.codechip{cursor:pointer;border:none;background:var(--stage);
+  border-radius:.8vmin;padding:.7vmin 1vmin;transition:.15s;
+  text-align:center}
+.codechip .cc{font-size:2vmin;font-weight:800;color:var(--muted);
+  letter-spacing:1px;transition:.15s}
+.codechip .cn{font-size:1.6vmin;color:var(--ink);font-weight:600;
+  margin-top:.2vmin;min-height:1.3vmin}
+.codechip.on{background:var(--grn-l);}
+.codechip.on .cc{color:var(--grn)}
+.codechip.pp.on{background:var(--purp-l);}
+.codechip.pp.on .cc{color:var(--purp)}
+.codechip.pp .cc{font-size:2.4vmin}
+.codechip.pp .cn{font-size:1.9vmin}
+
+/* ===== extracted utility classes (repeated patterns) ===== */
+.slide-head{display:flex;align-items:baseline;gap:1.6vmin;
+  margin-bottom:1.4vmin;flex-shrink:0}
+.card-col{overflow:hidden;display:flex;flex-direction:column}
+.card-fill{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column}
+.bpf{cursor:pointer;padding:.7vmin 1vmin;border-radius:.7vmin;transition:.15s}
+.bpf-flex{cursor:pointer;flex:1;padding:.7vmin 1vmin;
+  border-radius:.7vmin;transition:.15s}
+.bpf-route{cursor:pointer;flex:1;text-align:center;
+  padding:.8vmin;border-radius:.8vmin;transition:.15s}
+.bp-iata{font-size:4vmin;font-weight:800;color:var(--ink);letter-spacing:2px;line-height:1}
+.flex-ac{display:flex;align-items:center;gap:1vmin}
+.dash-sep{border-top:1px dashed var(--gray)}
+.line-h{flex:1;height:1px;background:var(--ink)}
+.topic-card{cursor:pointer;transition:transform .2s}
+.h-sec-mb{margin:1vmin 0 .8vmin}
+
+/* ===== home accordion (drop down) ===== */
+.acc-item{overflow:hidden}
+.acc-head{display:flex;align-items:center;gap:1.8vmin;
+  padding:1.8vmin 2.6vmin;cursor:pointer;user-select:none;
+  transition:background .15s}
+.acc-num{font-size:2.8vmin;font-weight:800;line-height:1;flex-shrink:0}
+.acc-chev{font-size:1.4vmin;color:var(--stage);transition:transform .25s;flex-shrink:0}
+.acc-item.open .acc-chev{transform:rotate(180deg)}
+.acc-body{max-height:0;overflow:hidden;opacity:0;
+  transition:max-height .3s ease,opacity .3s ease,padding .3s ease;padding:0 2.6vmin}
+.acc-item.open .acc-body{max-height:24vmin;opacity:1;padding:0 2.6vmin 2vmin calc(2.6vmin + 3.4vmin + 1.8vmin)}
+
+/* ===== extracted inline styles (in markup order) ===== */
+/* tiny helpers */
+.flex1{flex:1}
+.c-grn{color:var(--grn)}
+
+/* SLIDE 1 — home */
+.home-stage{justify-content:center}
+.home-head{text-align:center;margin-bottom:4vmin}
+.home-sub{margin-top:1.6vmin}
+.home-topics{display:flex;flex-direction:column;gap:1.6vmin;max-width:62%;margin:0 auto;width:100%}
+
+/* shared interactive layout (org / route / model boxes) */
+.info-box{flex:1;min-height:0;overflow:hidden;position:relative;display:flex;flex-direction:column}
+.slide-head.tight{margin-bottom:1.6vmin}
+.tab-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:1.4vmin;flex-shrink:0;margin-bottom:1.6vmin}
+.tab-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4vmin;flex-shrink:0;margin-bottom:1.6vmin}
+.tab-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4vmin;flex-shrink:0;margin-bottom:1.6vmin}
+
+/* org down button */
+.org-down{display:none;position:fixed;bottom:2.4vmin;left:50%;transform:translateX(-50%);z-index:60;
+  border:0;background:#ffffff1d;color:#909090;border-radius:10vmin;padding:1vmin 2.6vmin;
+  font-family:inherit;font-size:2.5vmin;font-weight:600;cursor:pointer;align-items:center;gap:.8vmin}
+.org-down .ar{font-size:2vmin}
+
+/* SLIDE 2B — comparison grid + column-tinted headers */
+.grid-fill{flex:1;min-height:0;display:grid;grid-template-columns:1fr;gap:2vmin}
+.th-icao,.th-iata,.th-caat,.th-aot{font-size:2.6vmin;text-align:center}
+.th-logo{width:10vmin;height:10vmin;object-fit:contain;border-radius:.8vmin;margin-top:.6vmin}
+.th-icao{color:#31629a}
+.th-iata{color:#2234ff}
+.th-caat{color:#90bb72}
+.th-aot{color:#81c3db}
+
+/* SLIDE 3 — ticket / boarding pass */
+.grid-ticket{flex:1;min-height:0;display:grid;grid-template-columns:1.25fr 1fr;gap:2vmin}
+.bp-card{overflow:hidden;display:flex;flex-direction:column;position:relative}
+.bp-stripe{height:.7vmin;background:linear-gradient(90deg,var(--purp),var(--blue),var(--grn));flex-shrink:0}
+.bp-body{padding:2vmin;flex:1;display:flex;flex-direction:column;gap:1.2vmin}
+.bp-head{display:flex;align-items:center;justify-content:space-between}
+.bp-logo{width:3.4vmin;height:3.4vmin;background:var(--purp);border-radius:.8vmin;
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.5vmin}
+.bp-airline{font-size:2.2vmin;font-weight:800;color:var(--navy);letter-spacing:.05em}
+.bp-pass-tag{letter-spacing:.1em}
+.tiny-07{letter-spacing:.07em}
+.bpf-name{padding:.8vmin 1vmin;border-radius:.8vmin}
+.bp-name{font-size:2.5vmin;font-weight:800;color:var(--navy)}
+.bp-mid{flex:1.2;text-align:center}
+.bp-mid-row{display:flex;align-items:center}
+.bp-plane{color:var(--ink);font-size:3vmin}
+.bpf-flight{font-size:2vmin;font-weight:700;color:var(--ink);padding:.3vmin;border-radius:.6vmin}
+.bp-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:.8vmin}
+.bp-val{font-size:2.2vmin;font-weight:700;color:var(--navy)}
+.bp-val.grn{color:var(--ink)}
+.bp-val.purp{color:var(--ink)}
+.bp-pnr-v{font-size:2.2vmin;font-weight:800;color:var(--ink);letter-spacing:2px}
+.bp-seq-v{font-size:2.2vmin;font-weight:800;color:var(--navy)}
+.bpf-ssss{padding:.7vmin 1vmin;border-radius:.7vmin;background:var(--red-l);border:none}
+.bp-ssss-v{font-size:2.2vmin;font-weight:800;color:var(--red);letter-spacing:2px}
+.bp-panel-content{flex:1;padding:2vmin;display:flex;flex-direction:column;
+  justify-content:center;align-items:center;text-align:center}
+.bp-panel-sub{margin-top:.8vmin}
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+<!-- ════════════════ FIXED TOP BAR ════════════════ -->
+<div class="bar" id="topbar">
+  <div class="bar-logo">
+    <div class="tx"><b>16170001</b><br>Aviation &amp; Service Industries</div>
+  </div>
+  <div class="bar-nav" id="topnav">
+    <button data-go="0" onclick="go(0)">หน้าหลัก</button>
+    <button data-go="1" onclick="go(1)">องค์กรกำกับการบิน</button>
+    <button data-go="3" onclick="go(3)">บัตรโดยสาร</button>
+    <button data-go="4" onclick="go(4)">เส้นทางการบิน</button>
+  </div>
+</div>
+
+<!-- ════════════════ SLIDE 1: HOME ════════════════ -->
+<section class="slide" data-nav="home">
+  <div class="stage home-stage">
+    <div class="home-head">
+      <div class="h-big">กฎระเบียบ บัตรโดยสาร<br>และเส้นทางการบิน</div>
+      <div class="sub home-sub">Aviation Regulations, Air Tickets and Flight Routes</div>
+    </div>
+
+    <div class="home-topics">
+      <!-- Topic 1 -->
+      <div class="card acc-item open">
+        <div class="acc-head" onclick="toggleAcc(this)">
+          <div class="acc-num c-grn">01</div>
+          <div class="h-sec flex1">องค์กรกำกับดูแลการบิน</div>
+          <span class="acc-chev">▾</span>
+        </div>
+        <div class="acc-body">
+          <div class="body">บทบาทและกฎระเบียบของ 4 องค์กรหลักที่ควบคุมการบินทั่วโลกและในไทย</div>
+        </div>
+      </div>
+      <!-- Topic 2 -->
+      <div class="card acc-item">
+        <div class="acc-head" onclick="toggleAcc(this)">
+          <div class="acc-num c-grn">02</div>
+          <div class="h-sec flex1">บัตรโดยสาร</div>
+          <span class="acc-chev">▾</span>
+        </div>
+        <div class="acc-body">
+          <div class="body">วิธีอ่านบอร์ดดิ้งพาส และรายละเอียดที่ผู้โดยสารควรรู้</div>
+        </div>
+      </div>
+      <!-- Topic 3 -->
+      <div class="card acc-item">
+        <div class="acc-head" onclick="toggleAcc(this)">
+          <div class="acc-num c-grn">03</div>
+          <div class="h-sec flex1">เส้นทางการบิน</div>
+          <span class="acc-chev">▾</span>
+        </div>
+        <div class="acc-body">
+          <div class="body">ประเภทเส้นทางตามระยะทาง และโมเดลการจัดเส้นทางของสายการบิน</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ SLIDE 2A: องค์กร (interactive) ════════════════ -->
+<section class="slide" data-nav="org">
+  <div class="stage">
+    <div class="slide-head">
+      <div class="h-mid">องค์กรกำกับดูแลการบิน</div>
+      <div class="sub">4 องค์กรหลัก</div>
+    </div>
+
+    <!-- 4 toggle buttons -->
+    <div class="tab-grid-4" id="orgTabs">
+      <button class="orgtab" data-org="icao" onclick="setOrg('icao')" style="--ac:var(--purp);--acl:var(--blue-l)">
+        <span class="ic logo"><img src="icao.jpg" alt="ICAO"></span>
+        <span class="lbl"><b>ICAO</b><span>1944</span></span>
+      </button>
+      <button class="orgtab" data-org="iata" onclick="setOrg('iata')" style="--ac:var(--purp);--acl:var(--grn-l)">
+        <span class="ic logo"><img src="iata.jpg" alt="IATA"></span>
+        <span class="lbl"><b>IATA</b><span>1945</span></span>
+      </button>
+      <button class="orgtab" data-org="caat" onclick="setOrg('caat')" style="--ac:var(--purp);--acl:var(--gold-l)">
+        <span class="ic logo"><img src="caat.jpg" alt="CAAT"></span>
+        <span class="lbl"><b>CAAT</b><span>2558</span></span>
+      </button>
+      <button class="orgtab" data-org="aot" onclick="setOrg('aot')" style="--ac:var(--purp);--acl:var(--purp-l)">
+        <span class="ic logo"><img src="aot.jpg" alt="AOT"></span>
+        <span class="lbl"><b>AOT</b><span>2522</span></span>
+      </button>
+    </div>
+
+    <!-- large info box -->
+    <div class="card info-box" id="orgBox">
+      <!-- filled by JS -->
+    </div>
+  </div>
+
+  <!-- down arrow (only ICAO/IATA) -->
+  <button id="orgDown" class="org-down" onclick="orgSub()">
+    <span id="orgDownLabel">o</span> <span class="ar"></span>
+  </button>
+</section>
+
+
+<!-- ════════════════ SLIDE 2B: เปรียบเทียบ + ความสัมพันธ์ ════════════════ -->
+<section class="slide" data-nav="org">
+  <div class="stage">
+    <div class="slide-head tight">
+      <div class="h-mid">ตารางเปรียบเทียบ 4 องค์กร</div>
+    </div>
+
+    <div class="grid-fill">
+
+      <!-- LEFT: comparison table -->
+      <div class="card card-col">
+        
+        <div class="scroll-zone flex1">
+          <table class="t">
+            <thead><tr><th></th>
+              <th class="th-icao">ICAO<br><img class="th-logo" src="icao.jpg" alt="ICAO"></th>
+              <th class="th-iata">IATA<br><img class="th-logo" src="iata.jpg" alt="IATA"></th>
+              <th class="th-caat">CAAT<br><img class="th-logo" src="caat.jpg" alt="CAAT"></th>
+              <th class="th-aot">AOT<br><img class="th-logo" src="aot.jpg" alt="AOT"></th>
+            </tr></thead>
+            <tbody>
+              <tr><td><b>ประเภท</b></td><td>UN (รัฐ)</td><td>เอกชน</td><td>รัฐไทย</td><td>รัฐวิสาหกิจ</td></tr>
+              <tr><td><b>ก่อตั้ง</b></td><td>1944</td><td>1945</td><td>2558</td><td>1979 (พ.ศ.2522)</td></tr>
+              <tr><td><b>สมาชิก</b></td><td>193 ชาติ</td><td>317 สายฯ</td><td>—</td><td>—</td></tr>
+              <tr><td><b>สำนักงาน</b></td><td>Montreal</td><td>Montreal/Geneva</td><td>กรุงเทพฯ</td><td>กรุงเทพฯ</td></tr>
+              <tr><td><b>อำนาจกฎหมาย</b></td><td>✅ มี</td><td>❌ ไม่มี</td><td>✅ (ไทย)</td><td>✅ (สนามบิน)</td></tr>
+              <tr><td><b>ขอบเขต</b></td><td>สากล</td><td>สากล</td><td>ไทย</td><td>ไทย</td></tr>
+              <tr><td><b>บทบาท</b></td><td>กำหนด SARPs</td><td>มาตรฐานธุรกิจ</td><td>กำกับการบิน</td><td>บริหารสนามบิน</td></tr>
+              <tr><td><b>การตรวจสอบ</b></td><td>USOAP</td><td>—</td><td>ตรวจ AOC</td><td>ภายใน</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ SLIDE 3: บัตรโดยสาร ════════════════ -->
+<section class="slide" data-nav="ticket">
+  <div class="stage">
+    <div class="slide-head tight">
+      <div class="h-mid">บัตรโดยสาร &amp; Boarding Pass</div>
+    </div>
+
+    <div class="grid-ticket">
+
+      <!-- LEFT: boarding pass mock -->
+      <div class="card bp-card">
+        <div class="bp-stripe"></div>
+        <div class="bp-body">
+          <div class="bp-head">
+            <div class="flex-ac">
+              <div class="bp-logo">✈</div>
+              <div class="bp-airline">THAI AIRWAYS</div>
+            </div>
+            <div class="tiny bp-pass-tag">BOARDING PASS</div>
+          </div>
+
+          <!-- name -->
+          <div onclick="bp('passenger')" class="bpf bpf-name" data-f="passenger">
+            <div class="tiny tiny-07">PASSENGER NAME</div>
+            <div class="bp-name">SOMCHAI / JAIDEE MR</div>
+          </div>
+
+          <!-- route -->
+          <div class="flex-ac">
+            <div onclick="bp('route')" class="bpf bpf-route" data-f="route">
+              <div class="bp-iata">BKK</div>
+              <div class="tiny">Bangkok</div>
+            </div>
+            <div class="bp-mid">
+              <div class="bp-mid-row"><div class="line-h"></div><span class="bp-plane">✈</span><div class="line-h"></div></div>
+              <div onclick="bp('flight')" class="bpf bpf-flight" data-f="flight">TG 660</div>
+            </div>
+            <div onclick="bp('route')" class="bpf bpf-route" data-f="route">
+              <div class="bp-iata">NRT</div>
+              <div class="tiny">Tokyo Narita</div>
+            </div>
+          </div>
+
+          <div class="dash-sep"></div>
+
+          <!-- grid -->
+          <div class="bp-grid3">
+            <div onclick="bp('date')" class="bpf" data-f="date"><div class="tiny">DATE</div><div class="bp-val">15 JUL</div></div>
+            <div onclick="bp('boarding')" class="bpf" data-f="boarding"><div class="tiny">BOARDING</div><div class="bp-val grn">09:30</div></div>
+            <div onclick="bp('departs')" class="bpf" data-f="departs"><div class="tiny">DEPARTS</div><div class="bp-val">10:00</div></div>
+            <div onclick="bp('gate')" class="bpf" data-f="gate"><div class="tiny">GATE</div><div class="bp-val">D5</div></div>
+            <div onclick="bp('seat')" class="bpf" data-f="seat"><div class="tiny">SEAT</div><div class="bp-val">42A</div></div>
+            <div onclick="bp('class')" class="bpf" data-f="class"><div class="tiny">CLASS</div><div class="bp-val purp">Y</div></div>
+          </div>
+
+          <div class="dash-sep"></div>
+
+          <!-- pnr ssss barcode -->
+          <div class="flex-ac">
+            <div onclick="bp('pnr')" class="bpf bpf-flex" data-f="pnr"><div class="tiny">PNR</div><div class="bp-pnr-v">7Q2X4P</div></div>
+            <div onclick="bp('seq')" class="bpf" data-f="seq"><div class="tiny">SEQ</div><div class="bp-seq-v">042</div></div>
+            <div onclick="bp('ssss')" class="bpf bpf-ssss" data-f="ssss"><div class="tiny">SECURITY</div><div class="bp-ssss-v">SSSS</div></div>
+            <div onclick="bp('bcbp')" class="bpf bpf-flex" data-f="bcbp">
+              <div class="tiny">BCBP</div>
+              <svg width="100%" height="3vmin" viewBox="0 0 160 24" preserveAspectRatio="none">
+                <rect x="0" width="3" height="24" fill="#1E293B"/><rect x="5" width="2" height="24" fill="#1E293B"/><rect x="9" width="4" height="24" fill="#1E293B"/><rect x="15" width="2" height="24" fill="#1E293B"/><rect x="19" width="3" height="24" fill="#1E293B"/><rect x="24" width="2" height="24" fill="#1E293B"/><rect x="28" width="5" height="24" fill="#1E293B"/><rect x="35" width="2" height="24" fill="#1E293B"/><rect x="39" width="3" height="24" fill="#1E293B"/><rect x="44" width="2" height="24" fill="#1E293B"/><rect x="48" width="4" height="24" fill="#1E293B"/><rect x="54" width="2" height="24" fill="#1E293B"/><rect x="58" width="3" height="24" fill="#1E293B"/><rect x="63" width="5" height="24" fill="#1E293B"/><rect x="70" width="2" height="24" fill="#1E293B"/><rect x="74" width="3" height="24" fill="#1E293B"/><rect x="79" width="2" height="24" fill="#1E293B"/><rect x="83" width="4" height="24" fill="#1E293B"/><rect x="89" width="2" height="24" fill="#1E293B"/><rect x="93" width="3" height="24" fill="#1E293B"/><rect x="98" width="5" height="24" fill="#1E293B"/><rect x="105" width="2" height="24" fill="#1E293B"/><rect x="109" width="3" height="24" fill="#1E293B"/><rect x="114" width="2" height="24" fill="#1E293B"/><rect x="118" width="4" height="24" fill="#1E293B"/><rect x="124" width="2" height="24" fill="#1E293B"/><rect x="128" width="3" height="24" fill="#1E293B"/><rect x="133" width="5" height="24" fill="#1E293B"/><rect x="140" width="2" height="24" fill="#1E293B"/><rect x="144" width="3" height="24" fill="#1E293B"/><rect x="149" width="2" height="24" fill="#1E293B"/><rect x="153" width="4" height="24" fill="#1E293B"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: explanation panel -->
+      <div class="card card-col" id="bp-panel">
+        <div class="scroll-zone bp-panel-content" id="bp-content">
+
+          <div class="sub bp-panel-sub"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ SLIDE 4A: เส้นทางตามระยะทาง (interactive) ════════════════ -->
+<section class="slide" data-nav="route">
+  <div class="stage">
+    <div class="slide-head">
+      <div class="h-mid">เส้นทางการบิน</div>
+      <div class="sub">จำแนกตามระยะทาง</div>
+    </div>
+
+    <!-- 3 toggle buttons -->
+    <div class="tab-grid-3" id="rtTabs">
+      <button class="orgtab" data-rt="domestic" onclick="setRt('domestic')" style="--ac:var(--grn);--acl:var(--grn-l)">
+        
+        <span class="lbl"><b>Domestic</b><span>ภายในประเทศ</span></span>
+      </button>
+      <button class="orgtab" data-rt="regional" onclick="setRt('regional')" style="--ac:var(--grn);--acl:var(--blue-l)">
+        
+        <span class="lbl"><b>Regional</b><span>ภายในภูมิภาค</span></span>
+      </button>
+      <button class="orgtab" data-rt="longhaul" onclick="setRt('longhaul')" style="--ac:var(--grn);--acl:var(--gold-l)">
+        
+        <span class="lbl"><b>Long-Haul</b><span>ข้ามทวีป</span></span>
+      </button>
+    </div>
+
+    <!-- large info box -->
+    <div class="card info-box" id="rtBox">
+      <!-- filled by JS -->
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════ SLIDE 4B: เส้นทางตามโมเดล (interactive) ════════════════ -->
+<section class="slide" data-nav="route">
+  <div class="stage">
+    <div class="slide-head">
+      <div class="h-mid">เส้นทางการบิน</div>
+      <div class="sub">จำแนกตามโมเดลการบิน</div>
+    </div>
+
+    <!-- 2 toggle buttons -->
+    <div class="tab-grid-2" id="mdTabs">
+      <button class="orgtab" data-md="hub" onclick="setMd('hub')" style="--ac:var(--gold);--acl:var(--blue-l)">
+       
+        <span class="lbl"><b>Hub &amp; Spoke</b><span>รวมศูนย์ผ่าน Hub</span></span>
+      </button>
+      <button class="orgtab" data-md="p2p" onclick="setMd('p2p')" style="--ac:var(--gold);--acl:var(--grn-l)">
+       
+        <span class="lbl"><b>Point-to-Point</b><span>บินตรง</span></span>
+      </button>
+    </div>
+
+    <!-- large info box -->
+    <div class="card" id="mdBox" style="flex:1;min-height:0;overflow:hidden;position:relative;display:flex;flex-direction:column">
+      <!-- filled by JS -->
+    </div>
+  </div>
+</section>
+
+
+<!-- progress dots + arrows -->
+<div class="arrows">
+  <button id="prevBtn" onclick="prev()">‹</button>
+  <button id="nextBtn" onclick="next()">›</button>
+</div>
+
+</div><!-- /deck -->
+
+<script>
+const slides = Array.from(document.querySelectorAll('.slide'));
+const N = slides.length;
+let cur = 0;
+
+function render(){
+  slides.forEach((s,i)=>{
+    s.classList.remove('active','prev');
+    if(i===cur) s.classList.add('active');
+    else if(i<cur) s.classList.add('prev');
+  });
+  // active nav: map slide -> nav group
+  let navTarget = 0;
+  if(cur===1||cur===2) navTarget=1;
+  else if(cur===3) navTarget=3;
+  else if(cur===4||cur===5) navTarget=4;
+  document.querySelectorAll('#topnav button').forEach(b=>{
+    b.classList.toggle('on', parseInt(b.dataset.go)===navTarget);
+  });
+  document.getElementById('prevBtn').disabled = cur===0;
+  document.getElementById('nextBtn').disabled = cur===N-1;
+  // org down arrow only on slide index 1
+  const od=document.getElementById('orgDown');
+  if(od && cur!==1) od.style.display='none';
+  else if(od && cur===1) renderOrg();
+}
+function go(i){ cur=Math.max(0,Math.min(N-1,i)); render(); }
+
+// home accordion toggle (no navigation)
+function toggleAcc(head){ head.parentElement.classList.toggle('open'); }
+function next(){ if(cur<N-1){cur++;render();} }
+function prev(){ if(cur>0){cur--;render();} }
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();next();}
+  if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();prev();}
+  if(e.key==='Home'){go(0);}
+  if(e.key==='End'){go(N-1);}
+  if(e.key>='1'&&e.key<='6'){go(parseInt(e.key)-1);}
+  if(e.key==='Escape'){go(0);}
+});
+
+// ══ ORG INTERACTIVE (slide 2A) ══
+const orgInfo = {
+  icao:{ac:'#2053b1',acl:'#EFF6FF',name:"Int'l Civil Aviation Organization",sub:'UN AGENCY · 1944',
+    rows:[['ชื่อองค์กร','<b>International Civil Aviation Organization (ICAO)</b>'],
+          ['ประเภทองค์กร','สหประชาชาติ (UN Specialized Agency)'],
+          ['ก่อตั้ง','ค.ศ. 1944 ตามอนุสัญญาชิคาโก'],
+          ['สมาชิก','<b>193 ประเทศ</b>'],
+          ['สำนักงานใหญ่','Montreal, Quebec, Canada'],
+          ['ภาษาทางการ','6 ภาษา: อังกฤษ ฝรั่งเศส สเปน รัสเซีย อาหรับ จีน'],
+          ['กฎระเบียบ','กำหนด <b>SARPs</b> ผ่าน 19 Annexes'],
+          ['การตรวจสอบ','USOAP — ตรวจสอบทุกประเทศสมาชิก'],
+          ['อำนาจ','มีอำนาจทางกฎหมาย']],
+    sub2:true},
+  iata:{ac:'#153ae1',acl:'#F0FDF4',name:"Int'l Air Transport Association",sub:'TRADE ASSOC. · 1945',
+    rows:[['ชื่อองค์กร','<b>International Air Transport Association (IATA)</b>'],
+          ['ประเภทองค์กร','สมาคมสายการบินเอกชน (Trade Association)'],
+          ['ก่อตั้ง','ค.ศ. 1945 ที่ Havana, Cuba'],
+          ['สมาชิก','<b>317 สายการบิน</b> จาก 120+ ประเทศ'],
+          ['สำนักงานใหญ่','Montreal, Canada และ Geneva, Switzerland'],
+          ['หน้าที่','รหัสสนามบิน (IATA Code), Airline Code, ระบบตั๋ว, BSP, DGR'],
+          ['อำนาจ','ไม่มีอำนาจกฎหมาย แต่ทุกสายการบินปฏิบัติตาม']],
+    sub2:true},
+  caat:{ac:'#6fad56',acl:'#FFFBEB',name:'Civil Aviation Authority of Thailand',sub:'THAI REGULATOR · 2558',
+    rows:[['ชื่อองค์กร','<b>Civil Aviation Authority of Thailand (CAAT)</b>'],
+          ['ประเภทองค์กร','หน่วยงานกำกับการบินพลเรือนไทย'],
+          ['ก่อตั้ง','พ.ศ. 2558 (แยกจากกรมการบินพลเรือน)'],
+          ['สังกัด','กระทรวงคมนาคม'],
+          ['หน้าที่','ออกใบอนุญาต <b>AOC</b> ออกใบอนุญาตนักบิน/ATC ตรวจสอบสายการบิน'],
+          ['กฎระเบียบ','นำ ICAO SARPs มาบังคับใช้ในไทย']],
+    sub2:false},
+  aot:{ac:'#52ade1',acl:'#FAF5FF',name:'Airports of Thailand PCL',sub:'STATE ENTERPRISE · 2522',
+    rows:[['ชื่อองค์กร','<b>Airports of Thailand Public Company Limited (AOT)</b>'],
+          ['ประเภทองค์กร','รัฐวิสาหกิจในตลาดหลักทรัพย์ (SET: AOT)'],
+          ['ก่อตั้ง','พ.ศ. 2522 (จดทะเบียน SET ปี 2545)'],
+          ['ผู้ถือหุ้น','กระทรวงคมนาคมถือหุ้นใหญ่ ประมาณ 70%'],
+          ['หน้าที่','บริหาร <b>6 ท่าอากาศยานหลัก</b> สุวรรณภูมิ ดอนเมือง เชียงใหม่ ภูเก็ต หาดใหญ่ เชียงราย'],
+          ['รายได้','Landing Fee, Terminal Fee และร้านค้า/สัมปทาน']],
+    sub2:false},
+};
+
+let curOrg='icao', orgView='main';
+
+function orgMainHTML(key){
+  const d=orgInfo[key];
+  const rows=d.rows.map(r=>`<div class="row"><div class="k" style="color:${d.ac};width:18vmin">${r[0]}</div><div class="v">${r[1]}</div></div>`).join('');
+  return `<div style="padding:2.6vmin 3vmin;flex:1;display:flex;align-items:center;gap:3vmin">
+    <div style="width:35%;flex-shrink:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:1.6vmin">
+      <div style="width:37vmin;height:37vmin;border-radius:1.4vmin;background:#fff;padding:0;overflow:hidden;display:flex;align-items:center;justify-content:center;box-shadow:0 .4vmin 1.4vmin rgba(13,31,60,.1)"><img src="${({icao:'icao.jpg',iata:'iata.jpg',caat:'caat.jpg',aot:'aot.jpg'})[key]}" alt="${key.toUpperCase()}" style="width:100%;height:100%;object-fit:cover;border-radius:1.4vmin"></div>
+    </div>
+    <div class="kvl" style="flex:1;font-size:2.6vmin;padding-left:3vmin">${rows.replace(/font-size:1.3vmin/g,'')}</div>
+  </div>`;
+}
+
+function orgSubHTML(key){
+  if(key==='icao'){
+    const ann=[
+      ['1','Personnel Licensing','ใบอนุญาตนักบิน วิศวกร ATC และบุคลากรการบิน'],
+      ['2','Rules of the Air','กฎการบิน VFR/IFR สัญญาณ Right of Way'],
+      ['3','Meteorological Service','บริการอุตุนิยมวิทยา METAR SIGMET TAF'],
+      ['4','Aeronautical Charts','มาตรฐานแผนที่การบิน SID STAR Approach Charts'],
+      ['5','Units of Measurement','หน่วยวัดสากล: ฟุต นอต กิโลเมตร เฮกโตปาสคาล'],
+      ['6','Operation of Aircraft','ระเบียบปฏิบัติการบิน Part 1=พาณิชย์ Part 2=ทั่วไป'],
+      ['7','Aircraft Nationality','สัญชาติและเครื่องหมายทะเบียนอากาศยาน เช่น HS=ไทย'],
+      ['8','Airworthiness','ความสมควรเดินอากาศ การรับรองแบบอากาศยาน Type Certificate'],
+      ['9','Facilitation','การอำนวยความสะดวก: Passport ศุลกากร สุขอนามัย'],
+      ['10','Aeronautical Telecom','ระบบโทรคมนาคม VHF วิทยุ ILS VOR NDB ADS-B'],
+      ['11','Air Traffic Services','บริการการจราจรทางอากาศ ATC Separation Standards'],
+      ['12','Search and Rescue','การค้นหาและกู้ภัย SAROPS ความร่วมมือระหว่างประเทศ'],
+      ['13','Aircraft Accident Investigation','การสอบสวนอุบัติเหตุ หน่วยงาน AAIB/NTSB'],
+      ['14','Aerodromes','มาตรฐานท่าอากาศยาน Runway Taxiway ระบบแสงไฟ'],
+      ['15','Aeronautical Information','ข้อมูลการบิน NOTAM AIP AIRAC Charts'],
+      ['16','Environmental Protection','เสียงรบกวน การปล่อยมลพิษ CORSIA'],
+      ['17','Security','การรักษาความปลอดภัยการบิน ตรวจค้นผู้โดยสาร'],
+      ['18','Dangerous Goods','การขนส่งสินค้าอันตรายทางอากาศ (ร่วมกับ IATA DGR)'],
+      ['19','Safety Management','SMS ระบบจัดการความปลอดภัย (เพิ่มล่าสุด ค.ศ. 2013)']];
+    const rowsHTML=list=>list.map(a=>`<tr${a[0]==='19'?' style="background:var(--purp-l)"':''}>
+      <td style="font-weight:800;color:#2053b1;text-align:center">${a[0]}</td>
+      <td style="font-weight:600;color:var(--ink)">${a[1]}</td>
+      <td style="color:var(--dgray)">${a[2]}</td></tr>`).join('');
+    const tbl=list=>`<table class="t" style="font-size:1.9vmin">
+      <thead><tr><th style="width:5vmin;text-align:center">Annex</th><th style="width:30%">หัวข้อ</th><th>รายละเอียด</th></tr></thead>
+      <tbody>${rowsHTML(list)}</tbody>
+    </table>`;
+    const half=Math.ceil(ann.length/2);
+    return `<div style="padding:2.4vmin 3vmin;flex:1;display:flex;flex-direction:column;min-height:0">
+      <div style="font-size:2.9vmin;font-weight:800;color:#2053b1;margin-bottom:.4vmin">กฎระเบียบที่เกี่ยวข้อง</div>
+      <div style="font-size:1.7vmin;color:var(--ink);margin-bottom:1.6vmin">ICAO 19 Annexes — มาตรฐานสากลที่ทุกประเทศต้องปฏิบัติ</div>
+      <div class="scroll-zone" style="flex:1">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2.6vmin;margin-bottom:1.6vmin">
+          ${tbl(ann.slice(0,half))}${tbl(ann.slice(half))}
+        </div>
+      </div></div>`;
+  }
+  // IATA sub-page: airport codes (left) + airline designators (right)
+  const thai=[['BKK','สุวรรณภูมิ'],['DMK','ดอนเมือง'],['CNX','เชียงใหม่'],['HKT','ภูเก็ต'],['HDY','หาดใหญ่'],['CEI','เชียงราย'],['USM','เกาะสมุย'],['KBV','กระบี่'],['URT','สุราษฎร์ธานี'],['NST','นครศรีธรรมราช'],['KKC','ขอนแก่น'],['UBP','อุบลราชธานี']];
+  const intl=[['NRT','Tokyo Narita'],['SIN','Singapore Changi'],['ICN','Seoul Incheon'],['HKG','Hong Kong'],['LHR','London Heathrow'],['CDG','Paris CDG'],['JFK','New York JFK'],['DXB','Dubai'],['SYD','Sydney'],['KUL','Kuala Lumpur'],['TPE','Taipei Taoyuan'],['FRA','Frankfurt']];
+  const airlines=[['TG','Thai Airways','#7C0A6B'],['PG','Bangkok Airways','#003E7E'],['FD','Thai AirAsia','#E40000'],['DD','Nok Air','#FFCC00'],['SL','Thai Lion Air','#E4002B'],['WE','Thai Smile','#5B2D8E'],['SQ','Singapore Airlines','#F5A623'],['EK','Emirates','#D71921'],['CX','Cathay Pacific','#006564'],['JL','Japan Airlines','#C8102E'],['KE','Korean Air','#00256C'],['QR','Qatar Airways','#5C0632']];
+  const chip=(c,n,cls='')=>`<div class="codechip ${cls}" onclick="this.classList.add('on');this.querySelector('.cn').textContent='${n}'"><div class="cc">${c}</div><div class="cn"></div></div>`;
+  const aline=(c,n,col)=>`<div onclick="this.querySelector('.an').textContent='${n}'" style="display:flex;flex-direction:column;align-items:center;gap:.6vmin;padding:.9vmin .6vmin;border:1px solid var(--gray);border-radius:.8vmin;cursor:pointer;transition:.15s;text-align:center" onmouseover="this.style.background='var(--grn-l)'" onmouseout="this.style.background=''"><div style="background:${col};color:#fff;border-radius:.5vmin;padding:.2vmin .8vmin;font-size:1.4vmin;font-weight:800;letter-spacing:.5px;min-width:4vmin;text-align:center">${c}</div><div class="an" style="font-size:1.3vmin;color:var(--dgray);min-height:1.4vmin;line-height:1.2"></div></div>`;
+  return `<div style="padding:2.4vmin 3vmin;flex:1;display:flex;flex-direction:column;min-height:0">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:2.6vmin;flex:1;min-height:0">
+      <div style="display:flex;flex-direction:column;min-height:0">
+        <div style="font-size:2.9vmin;font-weight:800;color:#153ae1;margin-bottom:.3vmin">IATA Airport Codes</div>
+        <div style="font-size:1.9vmin;color:var(--ink);margin-bottom:1.2vmin">รหัสสนามบิน</div>
+        <div class="scroll-zone" style="flex:1">
+          <div style="font-size:1.8vmin;font-weight:700;color:var(--ink);margin-bottom:.8vmin">ประเทศไทย</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.8vmin;margin-bottom:1.6vmin">${thai.map(a=>chip(a[0],a[1])).join('')}</div>
+          <div style="font-size:1.8vmin;font-weight:700;color:var(--ink);margin-bottom:.8vmin">ต่างประเทศ</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.8vmin">${intl.map(a=>chip(a[0],a[1])).join('')}</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;min-height:0;border-left:1px solid var(--gray);padding-left:2.6vmin">
+        <div style="font-size:2.9vmin;font-weight:800;color:#153ae1;margin-bottom:.3vmin">IATA Airline Designator</div>
+        <div style="font-size:1.9vmin;color:var(--ink);margin-bottom:1.2vmin">รหัสสายการบิน 2 ตัวอักษร</div>
+        <div class="scroll-zone" style="flex:1"><div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1vmin">${airlines.map(a=>chip(a[0],a[1],'pp')).join('')}</div></div>
+      </div>
+    </div></div>`;
+}
+
+// slide swap of a container's content. dir: 'up'/'down' (vertical) or 'left'/'right' (horizontal).
+// 'up' = new enters from bottom; 'down' = from top; 'left' = new from right; 'right' = new from left.
+function slideSwap(box, html, dir){
+  const oldEl = box.firstElementChild;
+  if(!oldEl){ box.innerHTML=html; return box.firstElementChild; }
+  box.insertAdjacentHTML('beforeend', html);
+  const newEl = box.lastElementChild;
+  const axis = (dir==='left'||dir==='right') ? 'X' : 'Y';
+  const sign = (dir==='up'||dir==='left') ? 1 : -1; // new enters from the positive side
+  [oldEl,newEl].forEach(el=>{el.style.position='absolute';el.style.inset='0';el.style.transition='transform .4s ease';});
+  newEl.style.transform = `translate${axis}(${sign*100}%)`;
+  void newEl.offsetWidth; // reflow so the start transform takes effect
+  oldEl.style.transform = `translate${axis}(${-sign*100}%)`;
+  newEl.style.transform = `translate${axis}(0)`;
+  setTimeout(()=>{
+    if(oldEl.parentNode===box) box.removeChild(oldEl);
+    newEl.style.position=newEl.style.inset=newEl.style.transition=newEl.style.transform='';
+  },420);
+  return newEl;
+}
+// horizontal direction between two keys in an ordered list (null if unchanged)
+function hdir(arr, oldKey, newKey){
+  const o=arr.indexOf(oldKey), n=arr.indexOf(newKey);
+  return n===o ? null : (n>o ? 'left' : 'right');
+}
+
+function renderOrg(anim){
+  const box=document.getElementById('orgBox');
+  const html = orgView==='main' ? orgMainHTML(curOrg) : orgSubHTML(curOrg);
+  if(anim) slideSwap(box, html, anim);
+  else box.innerHTML=html;
+  // tabs
+  document.querySelectorAll('.orgtab').forEach(b=>b.classList.toggle('on',b.dataset.org===curOrg));
+  // down arrow
+  const down=document.getElementById('orgDown');
+  const lbl=document.getElementById('orgDownLabel');
+  if(orgView==='main' && orgInfo[curOrg].sub2){
+    down.style.display='flex';
+    lbl.textContent = curOrg==='icao' ? '_' : '_';
+    down.querySelector('span:last-child').textContent='';
+  } else if(orgView==='sub'){
+    down.style.display='flex';
+    lbl.textContent='_';
+    down.querySelector('span:last-child').textContent='';
+  } else {
+    down.style.display='none';
+  }
+}
+function setOrg(key){ const dir=hdir(['icao','iata','caat','aot'],curOrg,key); curOrg=key; orgView='main'; renderOrg(dir||undefined); }
+function orgSub(){ orgView = orgView==='main'?'sub':'main'; renderOrg(orgView==='sub'?'up':'down'); }
+
+// ══ ROUTE BY DISTANCE (slide 4A) ══
+const rtInfo = {
+  domestic:{ac:'#059669',acl:'#F0FDF4',icon:'🏠',name:'Domestic',th:'ภายในประเทศ',
+    rows:[['ระยะทาง','&lt; 1,500 km'],['เวลาบิน','&lt; 2 ชั่วโมง'],['เครื่องบิน','Narrow-body (B737, A320, ATR72)'],
+          ['Passport','ไม่ต้องใช้ · ไม่ผ่านตรวจคนเข้าเมือง'],['Check-in','45–60 นาที'],
+          ['สายการบิน','TG, PG, DD, FD, SL'],['รายได้','ต่ำ แต่ความถี่สูง']],
+    examples:[
+      {from:'BKK',fromCity:'Bangkok',to:'CNX',toCity:'Chiang Mai',dur:'1h 15m',dist:'696 km',arc:'flat',img:'bkk-cnx-900x900.webp'},
+      {from:'BKK',fromCity:'Bangkok',to:'HKT',toCity:'Phuket',dur:'1h 25m',dist:'688 km',arc:'flat',img:'bkk-hkt-900x900.webp'},
+      {from:'BKK',fromCity:'Bangkok',to:'HDY',toCity:'Hat Yai',dur:'1h 25m',dist:'780 km',arc:'flat',img:'bkk-hdy-900x900.webp'}]},
+  regional:{ac:'#1D4ED8',acl:'#EFF6FF',icon:'🌏',name:'Regional',th:'ภูมิภาคเอเชีย',
+    rows:[['ระยะทาง','500–8,000 km'],['เวลาบิน','2–8 ชั่วโมง'],['เครื่องบิน','Mixed (B787, A330, A321)'],
+          ['Passport','ต้องใช้ + ผ่านตรวจคนเข้าเมือง'],['Check-in','2–3 ชั่วโมง'],
+          ['สายการบิน','TG, SQ, JL, AirAsia'],['รายได้','ปานกลาง']],
+    examples:[
+      {from:'BKK',fromCity:'Bangkok',to:'SIN',toCity:'Singapore',dur:'2h 25m',dist:'1,425 km',arc:'mid',img:'bkk-sin-900x900.webp'},
+      {from:'BKK',fromCity:'Bangkok',to:'NRT',toCity:'Tokyo',dur:'6h 40m',dist:'4,598 km',arc:'mid',img:'bkk-nrt-900x900.webp'},
+      {from:'BKK',fromCity:'Bangkok',to:'ICN',toCity:'Seoul',dur:'5h 40m',dist:'3,720 km',arc:'mid',img:'bkk-icn-900x900.webp'},
+      {from:'BKK',fromCity:'Bangkok',to:'HKG',toCity:'Hong Kong',dur:'2h 50m',dist:'1,712 km',arc:'mid',img:'bkk-hkg-900x900.webp'}]},
+  longhaul:{ac:'#D97706',acl:'#FFFBEB',icon:'🌍',name:'Long-Haul',th:'ข้ามทวีป',
+    rows:[['ระยะทาง','&gt; 5,000 km'],['เวลาบิน','6–18+ ชั่วโมง'],['เครื่องบิน','Wide-body เท่านั้น (B777, A380, A350)'],
+          ['บริการ','เตียงนอน, อาหาร Gourmet, IFE เต็มรูปแบบ'],['Crew Rest','บังคับตาม ICAO'],
+          ['สายการบิน','TG, BA, QR, EK, SQ'],['รายได้','สูงที่สุดต่อเที่ยวบิน']],
+    examples:[
+      {from:'BKK',fromCity:'Bangkok',to:'LHR',toCity:'London',dur:'11h 30m',dist:'9,542 km',arc:'high',img:'bkk-lhr-900x900.webp'},
+      {from:'BKK',fromCity:'Bangkok',to:'SYD',toCity:'Sydney',dur:'9h 20m',dist:'7,530 km',arc:'high',img:'bkk-syd-900x900.webp'}]}
+};
+
+let curRt='domestic', curEg=0;
+
+function rtMapSVG(d){
+  const ac=d.ac;
+  const arcPath = d.arc==='high' ? 'M 50 150 Q 250 20 450 150'
+                : d.arc==='mid'  ? 'M 60 140 Q 250 50 440 140'
+                :                  'M 70 120 L 430 120';
+  const y1 = d.arc==='flat'?120:150, y2=y1;
+  const fx = d.arc==='high'?50:d.arc==='mid'?60:70;
+  const tx = d.arc==='high'?450:d.arc==='mid'?440:430;
+  return `<svg width="100%" height="100%" viewBox="0 0 500 230" preserveAspectRatio="xMidYMid meet" style="max-height:100%">
+    <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="${d.acl}"/><stop offset="1" stop-color="#ffffff"/>
+    </linearGradient></defs>
+    <rect x="0" y="0" width="500" height="230" rx="14" fill="url(#sky)"/>
+    <path d="${arcPath}" stroke="${ac}" stroke-width="2.5" fill="none" stroke-dasharray="${d.arc==='flat'?'0':'7 6'}" opacity=".55"/>
+    <g transform="translate(250,${d.arc==='high'?42:d.arc==='mid'?63:120})">
+      <text font-size="26" text-anchor="middle" dominant-baseline="central">✈</text>
+    </g>
+    <circle cx="${fx}" cy="${y1}" r="9" fill="${ac}"/><circle cx="${fx}" cy="${y1}" r="4" fill="#fff"/>
+    <text x="${fx}" y="${y1+30}" text-anchor="middle" font-family="Anuphan" font-size="20" font-weight="800" fill="${ac}">${d.from}</text>
+    <text x="${fx}" y="${y1+48}" text-anchor="middle" font-family="Anuphan" font-size="12" fill="#64748B">${d.fromCity}</text>
+    <circle cx="${tx}" cy="${y2}" r="9" fill="${ac}"/><circle cx="${tx}" cy="${y2}" r="4" fill="#fff"/>
+    <text x="${tx}" y="${y2+30}" text-anchor="middle" font-family="Anuphan" font-size="20" font-weight="800" fill="${ac}">${d.to}</text>
+    <text x="${tx}" y="${y2+48}" text-anchor="middle" font-family="Anuphan" font-size="12" fill="#64748B">${d.toCity}</text>
+    <text x="250" y="${d.arc==='high'?18:d.arc==='mid'?34:100}" text-anchor="middle" font-family="Anuphan" font-size="13" fill="#64748B">${d.dur} · ${d.dist}</text>
+  </svg>`;
+}
+
+function rtRenderMap(scope,anim){
+  scope = scope || document;
+  const t=rtInfo[curRt];
+  const eg=t.examples[curEg];
+  const d={ac:t.ac,acl:t.acl,...eg};
+  const content = eg.img
+    ? `<img src="${eg.img}" alt="${eg.from}–${eg.to}" style="width:100%;height:100%;object-fit:contain;border-radius:1.4vmin">`
+    : rtMapSVG(d);
+  const map=scope.querySelector('#rtMap');
+  if(anim && map.firstElementChild) slideSwap(map,content,anim);
+  else map.innerHTML = content;
+  scope.querySelectorAll('#rtChips .rtchip').forEach((c,i)=>{
+    c.classList.toggle('on',i===curEg);
+    c.style.background = i===curEg ? t.ac : '#fff';
+    c.style.color = i===curEg ? '#fff' : t.ac;
+    c.style.borderColor = t.ac;
+  });
+}
+
+function renderRt(anim){
+  const d=rtInfo[curRt];
+  const rows=d.rows.map(r=>`<div class="row"><div class="k" style="color:${d.ac};width:14vmin">${r[0]}</div><div class="v">${r[1]}</div></div>`).join('');
+  const chips=d.examples.map((e,i)=>`<span class="rtchip" onclick="setEg(${i})" style="cursor:pointer;border:1.5px solid ${d.ac};border-radius:10vmin;padding:.6vmin 1.6vmin;font-size:1.9vmin;font-weight:700;transition:.15s;white-space:nowrap">${e.from}–${e.to}</span>`).join('');
+  const html = `
+    <div style="display:grid;grid-template-columns:1fr 1.1fr;gap:0;flex:1;min-height:0">
+      <div style="padding:2.6vmin 3vmin;display:flex;flex-direction:column;min-height:0">
+        <div style="display:flex;align-items:center;gap:1.4vmin;margin-bottom:1.8vmin">
+          <div>
+            <div style="font-size:4vmin;font-weight:800;color:${d.ac};line-height:1">${d.name}</div>
+            <div style="font-size:2.2vmin;font-weight:600;color:var(--ink)">${d.th}</div>
+          </div>
+        </div>
+        <div class="kvl scroll-zone" style="font-size:2.4vmin;flex:1">${rows}</div>
+      </div>
+      <div style="background:${d.acl};border-left:1px solid var(--gray);padding:2.4vmin;display:flex;flex-direction:column;min-height:0">
+        <div style="font-size:1.9vmin;font-weight:700;color:${d.ac};margin-bottom:1vmin;flex-shrink:0">ตัวอย่างเส้นทาง · คลิกเพื่อเปลี่ยน</div>
+        <div id="rtChips" style="display:flex;flex-wrap:wrap;gap:.8vmin;margin-bottom:1.4vmin;flex-shrink:0">${chips}</div>
+        <div id="rtMap" style="flex:1;min-height:0;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center"></div>
+      </div>
+    </div>`;
+  const box=document.getElementById('rtBox');
+  const newEl = anim ? slideSwap(box,html,anim) : (box.innerHTML=html, box.firstElementChild);
+  document.querySelectorAll('#rtTabs .orgtab').forEach(b=>b.classList.toggle('on',b.dataset.rt===curRt));
+  rtRenderMap(newEl);
+}
+function setRt(key){ const dir=hdir(['domestic','regional','longhaul'],curRt,key); curRt=key; curEg=0; renderRt(dir||undefined); }
+function setEg(i){ const dir = i>curEg?'left':i<curEg?'right':null; curEg=i; rtRenderMap(document,dir||undefined); }
+
+// ══ ROUTE BY MODEL (slide 4B) ══
+const mdInfo = {
+  hub:{ac:'#1D4ED8',acl:'#EFF6FF',icon:'🔵',name:'Hub & Spoke',th:'รวมศูนย์ผ่าน Hub กลาง — Full-Service Airlines',
+    pros:['ขยายเครือข่ายกว้างด้วยเที่ยวบินน้อย','Load Factor สูง (รวมผู้โดยสารหลาย Origin)','สนับสนุนเส้นทาง Thin Route ที่คนน้อย','บริหาร Slot สนามบินได้ง่ายกว่า'],
+    cons:['ผู้โดยสารต้องต่อเครื่อง ใช้เวลามากกว่า','Hub มีปัญหา → กระทบทั้งเครือข่าย','ค่าธรรมเนียมสนามบิน Hub สูง'],
+    who:'Thai Airways · Singapore Airlines · Emirates · Cathay Pacific',
+    eg:'CEI → BKK → LHR'},
+  p2p:{ac:'#059669',acl:'#F0FDF4',icon:'➡',name:'Point-to-Point',th:'บินตรงไม่แวะ — Low-Cost Carriers',
+    pros:['เวลาเดินทางสั้นกว่า ไม่ต้องต่อเครื่อง','ราคาตั๋วต่ำกว่า (ไม่มีต้นทุน Hub)','Turnaround เร็ว (25–30 นาที)','เส้นทางอิสระ ปัญหาไม่ลามทั้งระบบ'],
+    cons:['เส้นทางจำกัด ไม่ครอบคลุมทุกจุด','ไม่มี Interline (ต้องเช็คอินใหม่)','Load Factor ต่ำถ้าตลาดเล็ก'],
+    who:'AirAsia · Nok Air · Thai Lion · Scoot · Southwest',
+    eg:'BKK → CNX ตรง'}
+};
+
+let curMd='hub';
+
+function mdDiagram(key,ac){
+  if(key==='hub'){
+    return `<svg width="100%" height="100%" viewBox="0 0 360 220" preserveAspectRatio="xMidYMid meet" style="max-height:100%">
+      <line x1="60" y1="55" x2="180" y2="130" stroke="${ac}" stroke-width="2.5" stroke-dasharray="6 5" opacity=".55"/>
+      <line x1="300" y1="55" x2="180" y2="130" stroke="${ac}" stroke-width="2.5" stroke-dasharray="6 5" opacity=".55"/>
+      <line x1="50" y1="130" x2="180" y2="130" stroke="${ac}" stroke-width="2" stroke-dasharray="5 5" opacity=".35"/>
+      <line x1="310" y1="130" x2="180" y2="130" stroke="${ac}" stroke-width="2" stroke-dasharray="5 5" opacity=".35"/>
+      <circle cx="60" cy="55" r="8" fill="${ac}" opacity=".85"/><circle cx="60" cy="55" r="3.5" fill="#fff"/>
+      <circle cx="300" cy="55" r="8" fill="${ac}" opacity=".85"/><circle cx="300" cy="55" r="3.5" fill="#fff"/>
+      <circle cx="50" cy="130" r="6" fill="${ac}" opacity=".5"/>
+      <circle cx="310" cy="130" r="6" fill="${ac}" opacity=".5"/>
+      <circle cx="180" cy="130" r="13" fill="${ac}"/><circle cx="180" cy="130" r="5" fill="#fff"/>
+      <text x="60" y="40" text-anchor="middle" font-family="Anuphan" font-size="14" font-weight="700" fill="${ac}">CEI</text>
+      <text x="300" y="40" text-anchor="middle" font-family="Anuphan" font-size="14" font-weight="700" fill="${ac}">LHR</text>
+      <text x="180" y="165" text-anchor="middle" font-family="Anuphan" font-size="16" font-weight="800" fill="${ac}">BKK (Hub)</text>
+      <text x="180" y="105" text-anchor="middle" font-family="Anuphan" font-size="12" fill="#64748B">ต่อเครื่องที่ Hub</text>
+    </svg>`;
+  }
+  return `<svg width="100%" height="100%" viewBox="0 0 360 220" preserveAspectRatio="xMidYMid meet" style="max-height:100%">
+    <line x1="70" y1="110" x2="290" y2="110" stroke="${ac}" stroke-width="3" opacity=".75"/>
+    <line x1="70" y1="65" x2="290" y2="65" stroke="${ac}" stroke-width="2.5" opacity=".4"/>
+    <line x1="70" y1="155" x2="290" y2="155" stroke="${ac}" stroke-width="2.5" opacity=".4"/>
+    <circle cx="70" cy="110" r="8" fill="${ac}"/><circle cx="70" cy="110" r="3.5" fill="#fff"/>
+    <circle cx="290" cy="110" r="8" fill="${ac}"/><circle cx="290" cy="110" r="3.5" fill="#fff"/>
+    <circle cx="70" cy="65" r="6" fill="${ac}" opacity=".6"/><circle cx="290" cy="65" r="6" fill="${ac}" opacity=".6"/>
+    <circle cx="70" cy="155" r="6" fill="${ac}" opacity=".6"/><circle cx="290" cy="155" r="6" fill="${ac}" opacity=".6"/>
+    <text font-size="18" x="180" y="103" text-anchor="middle">✈</text>
+    <text x="70" y="185" text-anchor="middle" font-family="Anuphan" font-size="14" font-weight="700" fill="${ac}">ต้นทาง</text>
+    <text x="290" y="185" text-anchor="middle" font-family="Anuphan" font-size="14" font-weight="700" fill="${ac}">ปลายทาง</text>
+    <text x="180" y="90" text-anchor="middle" font-family="Anuphan" font-size="12" fill="#64748B">บินตรง ไม่ผ่าน Hub</text>
+  </svg>`;
+}
+
+function renderMd(anim){
+  const d=mdInfo[curMd];
+  const pros=d.pros.map(x=>`<div style="font-size:2.1vmin;line-height:1.7;color:var(--dgray);margin-bottom:.5vmin">• ${x}</div>`).join('');
+  const cons=d.cons.map(x=>`<div style="font-size:2.1vmin;line-height:1.7;color:var(--dgray);margin-bottom:.5vmin">• ${x}</div>`).join('');
+  const html = `
+    <div style="display:grid;grid-template-columns:1.15fr 1fr;gap:0;flex:1;min-height:0">
+      <!-- left: info -->
+      <div class="scroll-zone" style="padding:2.6vmin 3vmin;display:flex;flex-direction:column;min-height:0">
+        <div style="display:flex;align-items:center;gap:1.4vmin;margin-bottom:1.6vmin">
+          <div>
+            <div style="font-size:3.8vmin;font-weight:800;color:${d.ac};line-height:1.05">${d.name}</div>
+            <div style="font-size:2.2vmin;font-weight:600;color:var(--ink)">${d.th}</div>
+          </div>
+        </div>
+        <div style="font-size:2.2vmin;font-weight:700;color:var(--grn);margin-bottom:.6vmin">✓ ข้อดี</div>
+        ${pros}
+        <div style="font-size:2.2vmin;font-weight:700;color:var(--red);margin:1.4vmin 0 .6vmin">✗ ข้อเสีย</div>
+        ${cons}
+        <div style="background:${d.acl};border-radius:1vmin;padding:1.2vmin 1.6vmin;margin-top:1.4vmin">
+          <div style="font-size:1.9vmin;color:var(--dgray);margin-bottom:.5vmin"><b>ใครใช้:</b> ${d.who}</div>
+          <div style="font-size:1.9vmin;color:var(--dgray)"><b>ตัวอย่าง:</b> ${d.eg}</div>
+        </div>
+      </div>
+      <!-- right: diagram -->
+      <div style="background:${d.acl};border-left:1px solid var(--gray);padding:2.4vmin;display:flex;flex-direction:column;min-height:0">
+        <div style="font-size:1.5vmin;font-weight:700;color:${d.ac};margin-bottom:1vmin;flex-shrink:0">แผนผังเครือข่าย</div>
+        <div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center">${mdDiagram(curMd,d.ac)}</div>
+      </div>
+    </div>`;
+  const box=document.getElementById('mdBox');
+  if(anim) slideSwap(box,html,anim); else box.innerHTML=html;
+  document.querySelectorAll('#mdTabs .orgtab').forEach(b=>b.classList.toggle('on',b.dataset.md===curMd));
+}
+function setMd(key){ const dir=hdir(['hub','p2p'],curMd,key); curMd=key; renderMd(dir||undefined); }
+
+// ── Boarding pass field explanations ──
+const bpData={
+  route:{icon:'🛫',c:'#1D4ED8',bg:'#EFF6FF',t:'รหัสสนามบิน IATA',
+    body:'<b>BKK</b> = ท่าอากาศยานสุวรรณภูมิ (Suvarnabhumi)<br><b>NRT</b> = Tokyo Narita ประเทศญี่ปุ่น<br><br>รหัส 3 ตัวอักษรกำหนดโดย IATA ใช้ทั่วโลก<br>ตัวอย่าง: DMK=ดอนเมือง, CNX=เชียงใหม่, HKT=ภูเก็ต',
+    note:'BKK ≠ DMK แม้อยู่กรุงเทพฯ เหมือนกัน · ICAO Code 4 ตัว เช่น VTBS=สุวรรณภูมิ'},
+  flight:{icon:'✈️',c:'#1D4ED8',bg:'#EFF6FF',t:'หมายเลขเที่ยวบิน',
+    body:'<b>TG</b> = Airline Code (IATA) ของ Thai Airways<br><b>660</b> = หมายเลขเที่ยวบิน<br><br>เลขคู่มักเป็นขาออก เลขคี่ขากลับ (โดยทั่วไป)',
+    note:'SQ=Singapore, EK=Emirates, CX=Cathay · Codeshare: TG660 อาจเป็น NH4860 ของ ANA ด้วย'},
+  passenger:{icon:'🪪',c:'#0D1F3C',bg:'#F8FAFC',t:'ชื่อผู้โดยสาร',
+    body:'รูปแบบ: <b>นามสกุล / ชื่อ คำนำหน้า</b><br>ต้องตรงกับหนังสือเดินทาง 100%<br><br>MR=ชาย · MRS=หญิงแต่งงาน · MS=หญิง<br>MSTR/MISS=เด็ก · INF=ทารกต่ำกว่า 2 ปี',
+    note:'แม้สะกดผิดตัวเดียว IATA/CAAT ถือว่าไม่ใช่บุคคลเดียวกัน อาจขึ้นเครื่องไม่ได้'},
+  date:{icon:'📅',c:'#0D1F3C',bg:'#F8FAFC',t:'วันที่เดินทาง',
+    body:'<b>15 JUL</b> = วันที่ 15 กรกฎาคม<br><br>บัตรโดยสารระหว่างประเทศใช้รูปแบบ วันที่-เดือน (DD MMM)<br>ระวังสับสนกับรูปแบบอเมริกัน เดือน-วันที่',
+    note:'เที่ยวบินข้ามเส้นแบ่งเขตเวลา (Date Line) อาจถึงปลายทางคนละวันกับที่ออก'},
+  boarding:{icon:'🚪',c:'#059669',bg:'#F0FDF4',t:'Boarding Time',
+    body:'<b>09:30</b> = เวลาเปิดประตูให้ขึ้นเครื่อง<br><b>ต่างจาก Departs (10:00)</b> ที่เป็นเวลาเครื่องออก<br><br>ต้องอยู่ที่ Gate ก่อน Boarding Time เสมอ<br>Gate ปิดประมาณ 10–15 นาทีก่อน Departure',
+    note:'มาถึง Gate หลังปิด แม้ 1 นาที อาจพลาดเที่ยวบินทันที'},
+  departs:{icon:'⏰',c:'#0D1F3C',bg:'#F8FAFC',t:'Departure Time',
+    body:'<b>10:00</b> = เวลา Push-back (เครื่องออกจาก Gate)<br>ไม่ใช่เวลา Wheels-up (ล้อพ้นพื้น)<br><br>OTP (On-Time Performance) วัดจากจุดนี้<br>IATA นิยาม On-Time = ออกภายใน 15 นาที',
+    note:'Block Time = เวลาตั้งแต่ Push-back จนถึงล้อหยุดที่ปลายทาง'},
+  gate:{icon:'🏁',c:'#D97706',bg:'#FFFBEB',t:'Gate ประตูขึ้นเครื่อง',
+    body:'<b>D5</b> = Concourse D ประตูที่ 5<br><br>สุวรรณภูมิ: A–D เดินใกล้, E–G ต้องนั่ง People Mover<br>บางเที่ยวใช้ Remote Stand ต้องนั่งรถบัส (Bus Gate)',
+    note:'Gate เปลี่ยนได้ตลอด ตรวจสอบจากจอสนามบิน (FIDS) เสมอ อย่าเชื่อบัตร 100%'},
+  seat:{icon:'💺',c:'#0D1F3C',bg:'#F8FAFC',t:'หมายเลขที่นั่ง',
+    body:'<b>42A</b> = แถว 42 ที่นั่ง A (หน้าต่าง)<br><br>A/K=Window · C/D=Aisle · B/E=Middle<br>Wide-body: A B C–D E–G H K (9–10 ที่นั่ง/แถว)<br>Narrow-body: A B C–D E F (6 ที่นั่ง/แถว)',
+    note:'Exit Row = พื้นที่ขาเพิ่ม แต่ต้องช่วยเปิดประตูฉุกเฉินได้ · Bulkhead ไม่มีที่เก็บของใต้เก้าอี้'},
+  class:{icon:'🎫',c:'#7C3AED',bg:'#FAF5FF',t:'Fare Class',
+    body:'<b>Y</b> = Full Economy (ราคาเต็ม เปลี่ยนได้ฟรี)<br><br>F=First · C/J=Business · W=Premium Eco<br>Y=Full Eco · B/M/H=Flexible<br>Q/K/L=Discount · V/N/O=Deep Discount',
+    note:'Fare Class ≠ Cabin Class — ที่นั่ง Economy เดียวกันแต่ราคาและเงื่อนไขต่างกันมาก'},
+  pnr:{icon:'🔑',c:'#1D4ED8',bg:'#EFF6FF',t:'PNR — Passenger Name Record',
+    body:'<b>7Q2X4P</b> = รหัสจอง 6 ตัวอักษร-ตัวเลข<br><br>เป็น "กุญแจ" เข้าระบบ: เช็คอิน เปลี่ยนที่นั่ง ยกเลิก<br>สร้างโดย GDS (Amadeus, Sabre, Galileo)',
+    note:'ห้ามโพสต์รูปบัตรโดยสารลงโซเชียล! คนอื่นใช้ PNR + นามสกุลเข้าจัดการ Booking ได้'},
+  seq:{icon:'🔢',c:'#0D1F3C',bg:'#F8FAFC',t:'Sequence Number',
+    body:'<b>042</b> = ลำดับที่ 42 ที่เช็คอิน<br><br>SEQ 001 = คนแรกที่เช็คอินเที่ยวบินนั้น<br>ยิ่งเช็คอินเร็ว SEQ ยิ่งน้อย<br>บางสายการบินใช้จัดลำดับ Priority Boarding',
+    note:'Online Check-in 24 ชม. ล่วงหน้าเพื่อได้ SEQ ต่ำ = ขึ้นเครื่องก่อน'},
+  ssss:{icon:'🚨',c:'#DC2626',bg:'#FEF2F2',t:'SSSS — Secondary Security Screening',
+    body:'<b>Secondary Security Screening Selection</b><br><br>ถูกสุ่มเลือกให้ตรวจความปลอดภัยเพิ่มเติม:<br>• ค้นกระเป๋าแบบละเอียด<br>• Pat-down (ค้นตัว)<br>• ซักถามเพิ่มเติม<br>• วิเคราะห์รองเท้า/อุปกรณ์อิเล็กทรอนิกส์',
+    note:'พบบ่อยในเที่ยวบินสหรัฐฯ ควรเผื่อเวลา 45+ นาที · เป็นการสุ่ม ไม่ได้แปลว่าต้องสงสัย'},
+  bcbp:{icon:'📊',c:'#0D1F3C',bg:'#F8FAFC',t:'BCBP — Bar-Coded Boarding Pass',
+    body:'มาตรฐาน IATA Resolution 792<br><br>Barcode บรรจุข้อมูลทั้งหมด: ชื่อ PNR เส้นทาง<br>เที่ยวบิน ที่นั่ง SEQ Fare Class<br>Gate Scanner อ่านได้โดยไม่ต้องต่อเน็ต',
+    note:'รองรับ PDF417 stripe และ QR Code · อย่าให้คนอื่นสแกน มีข้อมูลส่วนตัวครบ'},
+};
+
+function bp(key){
+  const d=bpData[key]; if(!d) return;
+  document.querySelectorAll('.bpf').forEach(el=>{
+    if(el.dataset.f===key){el.style.background='var(--grn-l)';el.style.boxShadow='0 0 0 2px var(--grn)';}
+    else if(el.dataset.f==='ssss'){el.style.background='var(--red-l)';el.style.boxShadow='none';}
+    else{el.style.background='';el.style.boxShadow='none';}
+  });
+  document.getElementById('bp-content').style.justifyContent='flex-start';
+  document.getElementById('bp-content').style.alignItems='stretch';
+  document.getElementById('bp-content').innerHTML=
+    '<div style="font-size:3.2vmin;font-weight:800;color:'+d.c+';margin-bottom:2vmin">'+d.t+'</div>'+
+    '<div style="font-size:2.4vmin;color:var(--dgray);line-height:1.8;margin-bottom:2.4vmin">'+d.body+'</div>'+
+    '<div style="background:'+d.bg+';border-left:.5vmin solid '+d.c+';border-radius:0 .8vmin .8vmin 0;padding:1.6vmin 2vmin;font-size:2vmin;color:var(--dgray);line-height:1.65">'+d.note+'</div>';
+}
+
+render();
+renderOrg();
+renderRt();
+renderMd();</script>
+</body>
+</html>
