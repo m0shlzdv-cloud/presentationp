@@ -937,7 +937,8 @@ const bpData={
     note:'Gate เปลี่ยนได้ตลอด ตรวจสอบจากจอสนามบิน (FIDS) เสมอ อย่าเชื่อบัตร 100%'},
   seat:{icon:'💺',c:'#0D1F3C',bg:'#F8FAFC',t:'หมายเลขที่นั่ง',
     body:'<b>42A</b> = แถว 42 ที่นั่ง A (หน้าต่าง)<br><br>A/K=Window · C/D=Aisle · B/E=Middle<br>Wide-body: A B C–D E–G H K (9–10 ที่นั่ง/แถว)<br>Narrow-body: A B C–D E F (6 ที่นั่ง/แถว)',
-    note:'Exit Row = พื้นที่ขาเพิ่ม แต่ต้องช่วยเปิดประตูฉุกเฉินได้ · Bulkhead ไม่มีที่เก็บของใต้เก้าอี้'},
+    note:'Exit Row = พื้นที่ขาเพิ่ม แต่ต้องช่วยเปิดประตูฉุกเฉินได้ · Bulkhead ไม่มีที่เก็บของใต้เก้าอี้',
+    img:'seatmap.png'},
   class:{icon:'🎫',c:'#7C3AED',bg:'#FAF5FF',t:'Fare Class',
     body:'<b>Y</b> = Full Economy (ราคาเต็ม เปลี่ยนได้ฟรี)<br><br>F=First · C/J=Business · W=Premium Eco<br>Y=Full Eco · B/M/H=Flexible<br>Q/K/L=Discount · V/N/O=Deep Discount',
     note:'Fare Class ≠ Cabin Class — ที่นั่ง Economy เดียวกันแต่ราคาและเงื่อนไขต่างกันมาก'},
@@ -967,7 +968,8 @@ function bp(key){
   document.getElementById('bp-content').innerHTML=
     '<div style="font-size:3.2vmin;font-weight:800;color:'+d.c+';margin-bottom:2vmin">'+d.t+'</div>'+
     '<div style="font-size:2.4vmin;color:var(--dgray);line-height:1.8;margin-bottom:2.4vmin">'+d.body+'</div>'+
-    '<div style="background:'+d.bg+';border-left:.5vmin solid '+d.c+';border-radius:0 .8vmin .8vmin 0;padding:1.6vmin 2vmin;font-size:2vmin;color:var(--dgray);line-height:1.65">'+d.note+'</div>';
+    '<div style="background:'+d.bg+';border-left:.5vmin solid '+d.c+';border-radius:0 .8vmin .8vmin 0;padding:1.6vmin 2vmin;font-size:2vmin;color:var(--dgray);line-height:1.65">'+d.note+'</div>'+
+    (d.img?'<div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;margin-top:2vmin"><img src="'+d.img+'" alt="'+d.t+'" style="max-width:100%;max-height:100%;object-fit:contain;border-radius:1vmin"></div>':'');
 }
 
 render();
