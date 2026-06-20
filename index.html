@@ -477,11 +477,11 @@ table.t tbody tr:nth-child(even){background:var(--card)}
         
         <span class="lbl"><b>Domestic</b><span>ภายในประเทศ</span></span>
       </button>
-      <button class="orgtab" data-rt="regional" onclick="setRt('regional')" style="--ac:var(--grn);--acl:var(--blue-l)">
+      <button class="orgtab" data-rt="regional" onclick="setRt('regional')" style="--ac:var(--grn);--acl:var(--grn-l)">
         
         <span class="lbl"><b>Regional</b><span>ภายในภูมิภาค</span></span>
       </button>
-      <button class="orgtab" data-rt="longhaul" onclick="setRt('longhaul')" style="--ac:var(--grn);--acl:var(--gold-l)">
+      <button class="orgtab" data-rt="longhaul" onclick="setRt('longhaul')" style="--ac:var(--grn);--acl:var(--grn-l)">
         
         <span class="lbl"><b>Long-Haul</b><span>ข้ามทวีป</span></span>
       </button>
@@ -745,7 +745,7 @@ function orgSub(){ orgView = orgView==='main'?'sub':'main'; renderOrg(orgView===
 
 // ══ ROUTE BY DISTANCE (slide 4A) ══
 const rtInfo = {
-  domestic:{ac:'#059669',acl:'#F0FDF4',icon:'🏠',name:'Domestic',th:'ภายในประเทศ',
+  domestic:{ac:'var(--grn)',acl:'var(--grn-l)',icon:'🏠',name:'Domestic',th:'ภายในประเทศ',
     rows:[['ระยะทาง','&lt; 1,500 km'],['เวลาบิน','&lt; 2 ชั่วโมง'],['เครื่องบิน','Narrow-body (B737, A320, ATR72)'],
           ['Passport','ไม่ต้องใช้ · ไม่ผ่านตรวจคนเข้าเมือง'],['Check-in','45–60 นาที'],
           ['สายการบิน','TG, PG, DD, FD, SL'],['รายได้','ต่ำ แต่ความถี่สูง']],
@@ -753,7 +753,7 @@ const rtInfo = {
       {from:'BKK',fromCity:'Bangkok',to:'CNX',toCity:'Chiang Mai',dur:'1h 15m',dist:'696 km',arc:'flat',img:'bkk-cnx-900x900.webp'},
       {from:'BKK',fromCity:'Bangkok',to:'HKT',toCity:'Phuket',dur:'1h 25m',dist:'688 km',arc:'flat',img:'bkk-hkt-900x900.webp'},
       {from:'BKK',fromCity:'Bangkok',to:'HDY',toCity:'Hat Yai',dur:'1h 25m',dist:'780 km',arc:'flat',img:'bkk-hdy-900x900.webp'}]},
-  regional:{ac:'#1D4ED8',acl:'#EFF6FF',icon:'🌏',name:'Regional',th:'ภูมิภาคเอเชีย',
+  regional:{ac:'var(--grn)',acl:'var(--grn-l)',icon:'🌏',name:'Regional',th:'ภูมิภาคเอเชีย',
     rows:[['ระยะทาง','500–8,000 km'],['เวลาบิน','2–8 ชั่วโมง'],['เครื่องบิน','Mixed (B787, A330, A321)'],
           ['Passport','ต้องใช้ + ผ่านตรวจคนเข้าเมือง'],['Check-in','2–3 ชั่วโมง'],
           ['สายการบิน','TG, SQ, JL, AirAsia'],['รายได้','ปานกลาง']],
@@ -762,7 +762,7 @@ const rtInfo = {
       {from:'BKK',fromCity:'Bangkok',to:'NRT',toCity:'Tokyo',dur:'6h 40m',dist:'4,598 km',arc:'mid',img:'bkk-nrt-900x900.webp'},
       {from:'BKK',fromCity:'Bangkok',to:'ICN',toCity:'Seoul',dur:'5h 40m',dist:'3,720 km',arc:'mid',img:'bkk-icn-900x900.webp'},
       {from:'BKK',fromCity:'Bangkok',to:'HKG',toCity:'Hong Kong',dur:'2h 50m',dist:'1,712 km',arc:'mid',img:'bkk-hkg-900x900.webp'}]},
-  longhaul:{ac:'#D97706',acl:'#FFFBEB',icon:'🌍',name:'Long-Haul',th:'ข้ามทวีป',
+  longhaul:{ac:'var(--grn)',acl:'var(--grn-l)',icon:'🌍',name:'Long-Haul',th:'ข้ามทวีป',
     rows:[['ระยะทาง','&gt; 5,000 km'],['เวลาบิน','6–18+ ชั่วโมง'],['เครื่องบิน','Wide-body เท่านั้น (B777, A380, A350)'],
           ['บริการ','เตียงนอน, อาหาร Gourmet, IFE เต็มรูปแบบ'],['Crew Rest','บังคับตาม ICAO'],
           ['สายการบิน','TG, BA, QR, EK, SQ'],['รายได้','สูงที่สุดต่อเที่ยวบิน']],
@@ -814,7 +814,7 @@ function rtRenderMap(scope,anim){
   scope.querySelectorAll('#rtChips .rtchip').forEach((c,i)=>{
     c.classList.toggle('on',i===curEg);
     c.style.background = i===curEg ? t.ac : '#fff';
-    c.style.color = i===curEg ? '#fff' : t.ac;
+    c.style.color = i===curEg ? 'var(--ink)' : t.ac;
     c.style.borderColor = t.ac;
   });
 }
