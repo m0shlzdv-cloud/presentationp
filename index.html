@@ -885,12 +885,18 @@ function renderMd(anim){
             <div style="font-size:2.2vmin;font-weight:600;color:var(--ink)">${d.th}</div>
           </div>
         </div>
-        <div style="font-size:2.2vmin;font-weight:700;color:var(--grn);margin-bottom:.6vmin">✓ ข้อดี</div>
-        ${pros}
-        <div style="font-size:2.2vmin;font-weight:700;color:var(--red);margin:1.4vmin 0 .6vmin">✗ ข้อเสีย</div>
-        ${cons}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2vmin">
+          <div>
+            <div style="font-size:2.2vmin;font-weight:700;color:var(--grn);margin-bottom:.6vmin">✓ ข้อดี</div>
+            ${pros}
+          </div>
+          <div>
+            <div style="font-size:2.2vmin;font-weight:700;color:var(--red);margin-bottom:.6vmin">✗ ข้อเสีย</div>
+            ${cons}
+          </div>
+        </div>
         <div style="background:${d.acl};border-radius:1vmin;padding:1.2vmin 1.6vmin;margin-top:1.4vmin">
-          <div style="font-size:1.9vmin;color:var(--dgray);margin-bottom:.5vmin"><b>ใครใช้:</b> ${d.who}</div>
+          <div style="font-size:1.9vmin;color:var(--dgray);margin-bottom:.5vmin"><b>สายการบิน:</b> ${d.who}</div>
           <div style="font-size:1.9vmin;color:var(--dgray)"><b>ตัวอย่าง:</b> ${d.eg}</div>
         </div>
       </div>
