@@ -56,6 +56,13 @@ html,body{height:100%;overflow:hidden;font-family:'Google_Sans',sans-serif;backg
   font-weight:600;padding:.9vmin 2.2vmin;border-radius:10vmin;
   cursor:pointer;transition:.15s;white-space:nowrap}
 .bar-nav button.on{background:var(--grn);color:var(--ink)}
+.bar-logo{display:flex;align-items:center;gap:1.2vmin}
+.fs-btn{width:3.4vmin;height:3.4vmin;border-radius:50%;border:0;
+  background:#ffffff40;color:#6a6a6a;font-size:1.8vmin;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:.2s;flex-shrink:0;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  box-shadow:0 .6vmin 2vmin rgba(13,31,60,.12)}
+.fs-btn:hover{background:#ffffff80;color:var(--ink)}
 
 /* ===== STAGE / CONTENT ===== */
 .stage{flex:1;min-height:0;display:flex;flex-direction:column}
@@ -245,6 +252,7 @@ table.t tbody tr:nth-child(even){background:var(--card)}
 <!-- ════════════════ FIXED TOP BAR ════════════════ -->
 <div class="bar" id="topbar">
   <div class="bar-logo">
+    <button class="fs-btn" id="fsBtn" onclick="toggleFS()" title="เต็มจอ (Fullscreen)" aria-label="Fullscreen">⛶</button>
     <div class="tx"><b>16170001</b><br>Aviation &amp; Service Industries</div>
   </div>
   <div class="bar-nav" id="topnav">
@@ -563,6 +571,18 @@ function go(i){ cur=Math.max(0,Math.min(N-1,i)); render(); }
 function toggleAcc(head){ head.parentElement.classList.toggle('open'); }
 function next(){ if(cur<N-1){cur++;render();} }
 function prev(){ if(cur>0){cur--;render();} }
+function toggleFS(){
+  const el=document.documentElement;
+  if(!document.fullscreenElement&&!document.webkitFullscreenElement){
+    (el.requestFullscreen||el.webkitRequestFullscreen||(()=>{})).call(el);
+  }else{
+    (document.exitFullscreen||document.webkitExitFullscreen||(()=>{})).call(document);
+  }
+}
+document.addEventListener('fullscreenchange',()=>{
+  const b=document.getElementById('fsBtn');
+  if(b) b.textContent=document.fullscreenElement?'✕':'⛶';
+});
 
 document.addEventListener('keydown',e=>{
   if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();next();}
